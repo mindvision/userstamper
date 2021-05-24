@@ -73,8 +73,14 @@ module Userstamper::Stampable
       klass = stamper_class.try(:name)
       relation_options = options.reverse_merge(class_name: klass)
 
-      belongs_to :creator, relation_options.reverse_merge(foreign_key: config.creator_attribute, required: false) if associations.first
-      belongs_to :updater, relation_options.reverse_merge(foreign_key: config.updater_attribute, required: false) if associations.second
+      if associations.first
+        relation_params = relation_options.reverse_merge(foreign_key: config.creator_attribute, required: false)
+        belongs_to :creator, **relation_params
+      end
+      if associations.second
+        relation_params = relation_options.reverse_merge(foreign_key: config.updater_attribute, required: false)
+        belongs_to :updater, **relation_params
+      end
     end
   end
 
